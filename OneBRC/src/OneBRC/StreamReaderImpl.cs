@@ -26,8 +26,8 @@ public class StreamReaderImpl
             if (!dictionary.TryGetValue(city, out var accumulator))
             {
                 dictionary[city] = accumulator = new Accumulator(city);
-                accumulator.Record(value);
             }
+            accumulator.Record(value);
             line = reader.ReadLine();
         }
 
