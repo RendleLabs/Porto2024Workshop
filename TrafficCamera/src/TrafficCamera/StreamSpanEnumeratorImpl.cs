@@ -3,6 +3,9 @@ using TrafficCamera.Shared;
 
 namespace TrafficCamera;
 
+/// <summary>
+/// THIS WAS NOT A GOOD IDEA DON'T DO THIS
+/// </summary>
 public class StreamSpanEnumeratorImpl
 {
     private readonly string _filePath;
