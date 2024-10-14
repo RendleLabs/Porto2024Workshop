@@ -17,6 +17,19 @@ public struct CityKey : IEquatable<CityKey>
         _key3 = key3;
     }
 
+    public static CityKey Create(ReadOnlySpan<byte> city)
+    {
+        if (city.Length < 32)
+        {
+            Span<byte> temp = stackalloc byte[32];
+            temp.Clear();
+            city.CopyTo(temp);
+            return CreateImpl(temp);
+        }
+        
+        return CreateImpl(city);
+    }
+
     public static CityKey Create(ReadOnlySpan<char> city)
     {
         var bytes = MemoryMarshal.AsBytes(city);
@@ -26,17 +39,15 @@ public struct CityKey : IEquatable<CityKey>
             Span<byte> temp = stackalloc byte[32];
             temp.Clear();
             bytes.CopyTo(temp);
-            var key = MemoryMarshal.Read<long>(temp);
-            return Create(temp);
+            return CreateImpl(temp);
         }
         else
         {
-            var key = MemoryMarshal.Read<long>(bytes);
-            return Create(bytes);
+            return CreateImpl(bytes);
         }
     }
 
-    private static CityKey Create(ReadOnlySpan<byte> bytes)
+    private static CityKey CreateImpl(ReadOnlySpan<byte> bytes)
     {
         var key0 = MemoryMarshal.Read<long>(bytes.Slice(0, 8));
         var key1 = MemoryMarshal.Read<long>(bytes.Slice(8, 8));

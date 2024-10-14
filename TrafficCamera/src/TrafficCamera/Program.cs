@@ -1,4 +1,7 @@
-﻿using TrafficCamera;
+﻿using System.Diagnostics;
+using TrafficCamera;
+
+var stopwatch = Stopwatch.StartNew();
 
 var filePath = Path.GetFullPath(args[0]);
 
@@ -9,3 +12,7 @@ if (!t.IsCompleted)
 {
     await t;
 }
+
+stopwatch.Stop();
+
+Console.WriteLine(stopwatch.Elapsed);

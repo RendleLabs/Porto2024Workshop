@@ -4,7 +4,7 @@ using OneBRC;
 var stopwatch = Stopwatch.StartNew();
 
 var filePath = Path.GetFullPath(args[0]);
-var impl = new StreamReaderSpanImpl(filePath);
+var impl = new StreamSpanImpl(filePath);
 var task = impl.Run();
 
 if (!task.IsCompleted)
