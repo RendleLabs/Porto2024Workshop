@@ -1,6 +1,10 @@
 ﻿using System.Diagnostics;
 using OneBRC;
 
+// NEVER DO THIS
+// Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.RealTime;
+// UNLESS YOU REALLY WANT TO
+
 var stopwatch = Stopwatch.StartNew();
 
 var filePath = Path.GetFullPath(args[0]);

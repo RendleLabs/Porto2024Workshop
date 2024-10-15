@@ -1,4 +1,5 @@
 using System.IO.MemoryMappedFiles;
+using System.Runtime.CompilerServices;
 using System.Text;
 using OneBRC.Shared;
 
@@ -55,6 +56,7 @@ public class ChunkParser
         accumulator.Record(temperature);
     }
     
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int ParseTemperature(ReadOnlySpan<byte> span)
     {
         int multiplier = 1;
