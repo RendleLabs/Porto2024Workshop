@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.Intrinsics;
+using System.Text;
 using TrafficCamera.Shared;
 
 namespace TrafficCamera;
@@ -38,11 +39,27 @@ public class StreamSpanIntImpl
             span.CopyTo(buffer);
             offset = span.Length;
         }
+
+        var totalColors = Vector256<int>.Zero;
         
         foreach (var accumulator in dictionary.Values.OrderBy(a => a.Road))
         {
             Console.WriteLine($"{accumulator.Road}: {accumulator.Slowest:F1} [{accumulator.SlowestLicensePlate}]/{accumulator.Mean:F1}/{accumulator.Fastest:F1} [{accumulator.FastestLicensePlate}]");
+
+            var colors = Vector256.Create<int>(accumulator.ColorCounter);
+            
+            totalColors = Vector256.Add(totalColors, colors);
         }
+
+        Console.WriteLine();
+        Console.WriteLine($"Red: {totalColors[0]}");
+        Console.WriteLine($"Green: {totalColors[1]}");
+        Console.WriteLine($"Blue: {totalColors[2]}");
+        Console.WriteLine($"Black: {totalColors[3]}");
+        Console.WriteLine($"White: {totalColors[4]}");
+        Console.WriteLine($"Grey: {totalColors[5]}");
+        Console.WriteLine($"Silver: {totalColors[6]}");
+        Console.WriteLine($"Other: {totalColors[7]}");
 
         return default;
     }
@@ -59,6 +76,10 @@ public class StreamSpanIntImpl
         line = line.Slice(sc + 1); // Skip past the road
         sc = line.IndexOf((byte)';');
         var licensePlate = line.Slice(0, sc);
+
+        line = line.Slice(sc + 1);
+        sc = line.IndexOf((byte)';');
+        var color = line.Slice(0, sc);
         
         sc = line.LastIndexOf((byte)';'); // Find the last field (speed)
         var speedSpan = line.Slice(sc + 1);
@@ -68,7 +89,7 @@ public class StreamSpanIntImpl
         {
             dictionary[key] = accumulator = new IntAccumulator(Encoding.UTF8.GetString(road));
         }
-        accumulator.Record(speed, licensePlate);
+        accumulator.Record(speed, licensePlate, color);
     }
 
     private static int ParseSpeed(ReadOnlySpan<byte> span)
